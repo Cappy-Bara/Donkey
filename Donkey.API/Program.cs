@@ -4,6 +4,7 @@ using Donkey.API.Settings.Swagger;
 using Donkey.Core;
 using Donkey.Core.Entities;
 using Donkey.Core.Repositories;
+using Donkey.Infrastructure;
 using Donkey.Infrastructure.ErrorHandlingMiddleware;
 using Donkey.Infrastructure.Repositories;
 using MediatR;
@@ -18,15 +19,15 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(x => x.AddAuthorizationFieldInSwagger());
 builder.Services.AddCustomAuthentication(builder.Configuration);
-
+builder.Services.AddMediatR(typeof(Program));
 builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddScoped<IUserDataProvider, UserDataProvider>();
+builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
 builder.Services.AddCore();
+builder.Services.AddInfrastructure();
 
-builder.Services.AddMediatR(typeof(Program));
-builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
-builder.Services.AddScoped<IUsersRepository, MockedUsersRepository>();
 
 builder.Services.AddCors(options =>
 {
@@ -41,13 +42,13 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+// NOT SURE
+app.Urls.Append("http://*:" + Environment.GetEnvironmentVariable("PORT"));
+
 app.UseCors("AllowAllOrigins");
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
