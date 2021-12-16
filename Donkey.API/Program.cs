@@ -3,10 +3,8 @@ using Donkey.API.Settings.Authentication;
 using Donkey.API.Settings.Swagger;
 using Donkey.Core;
 using Donkey.Core.Entities;
-using Donkey.Core.Repositories;
 using Donkey.Infrastructure;
 using Donkey.Infrastructure.ErrorHandlingMiddleware;
-using Donkey.Infrastructure.Repositories;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 
@@ -41,9 +39,6 @@ builder.Services.AddCors(options =>
 
 
 var app = builder.Build();
-
-// NOT SURE
-app.Urls.Append("http://*:" + Environment.GetEnvironmentVariable("PORT"));
 
 app.UseCors("AllowAllOrigins");
 
