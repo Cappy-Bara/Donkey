@@ -2,6 +2,7 @@
 using Donkey.API.DTOs.Responses;
 using Donkey.API.Settings.Authentication;
 using Donkey.Core.Actions.Queries.Account.Login;
+using Donkey.Infrastructure.ErrorHandlingMiddleware;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -19,9 +20,9 @@ namespace Donkey.API.Controllers
 
         [SwaggerOperation("Logs user in aplication")]
         [SwaggerResponse(200,"User provided correct email and password",typeof(UserDataDto))]
-        [SwaggerResponse(404,"User provided incorrect login")]
-        [SwaggerResponse(400,"User provided correct login and incorrect password")]
-        [SwaggerResponse(400,"User didin't provided value in one of the fields, or provided incorrect value.")]
+        [SwaggerResponse(404,"User provided incorrect login",typeof(ResponseDetails))]
+        [SwaggerResponse(400,"User provided correct login and incorrect password", typeof(ValidationProblemDetails))]
+        [SwaggerResponse(400,"User didin't provided value in one of the fields, or provided incorrect value.",typeof(ValidationProblemDetails))]
         [HttpPost("login")]
         public async Task<ActionResult<UserDataDto>> Login([FromBody]LoginDto loginData)
         {
@@ -35,7 +36,7 @@ namespace Donkey.API.Controllers
             };
 
             var token = await _mediator.Send(query);
-            
+
             var output = new UserDataDto() 
             {
                 Token = token
