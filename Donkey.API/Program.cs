@@ -15,7 +15,13 @@ builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(x => x.AddAuthorizationFieldInSwagger());
+
+builder.Services.AddSwaggerGen(gen => 
+{
+    gen.EnableAnnotations();
+    gen.AddAuthorizationFieldInSwagger();
+});
+
 builder.Services.AddCustomAuthentication(builder.Configuration);
 builder.Services.AddMediatR(typeof(Program));
 builder.Services.AddHttpContextAccessor();
@@ -25,7 +31,6 @@ builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
 builder.Services.AddCore();
 builder.Services.AddInfrastructure();
-
 
 builder.Services.AddCors(options =>
 {
@@ -37,11 +42,11 @@ builder.Services.AddCors(options =>
         );
 });
 
-
 var app = builder.Build();
 
 app.UseCors("AllowAllOrigins");
 
+app.UseDeveloperExceptionPage();
 app.UseSwagger();
 app.UseSwaggerUI();
 

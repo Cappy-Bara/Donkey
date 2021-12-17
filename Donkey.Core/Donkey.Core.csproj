@@ -7,9 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Actions\Handlers\CommandHandlers\" />
-    <Folder Include="Actions\Requests\Commands\" />
-    <Folder Include="Actions\Requests\Queries\" />
+    <Folder Include="Actions\Commands\" />
     <Folder Include="Services\" />
   </ItemGroup>
 
@@ -18,6 +16,8 @@
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
     <PackageReference Include="Microsoft.AspNet.Identity.Core" Version="2.2.3" />
     <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="6.0.1" />
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.15.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.15.0" />
   </ItemGroup>
 
 </Project>

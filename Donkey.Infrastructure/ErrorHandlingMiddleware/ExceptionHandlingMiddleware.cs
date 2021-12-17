@@ -32,22 +32,26 @@ namespace Donkey.Infrastructure.ErrorHandlingMiddleware
             catch (DonkeyException ex)
             {
                 _logger.LogWarning($"HANDLED EXCEPTION THROWN: CODE - {ex.StatusCode} - {ex.Message}");
+                await WriteExceptionAsync(context, ex.ToErrorDetails((HttpStatusCode)ex.StatusCode));
 
             }
             catch (InvalidOperationException ex)
             {
                 _logger.LogInformation($"UNAUTHORIZED OPERATION: CODE - {HttpStatusCode.Unauthorized} - {ex.Message}");
+                await WriteExceptionAsync(context, ex.ToErrorDetails(HttpStatusCode.Unauthorized));
 
             }
             catch (Exception ex)
             {
                 _logger.LogError($"!UNHANDLED EXCEPTION THROWN: CODE - 500 - {ex.Message}");
+                await WriteExceptionAsync(context, ex.ToErrorDetails());
+
             }
         }
 
-        private async Task WriteExceptionAsync(HttpContext context, ErrorDetails details)
+        private static async Task WriteExceptionAsync(HttpContext context, ErrorDetails details)
         {
-            ResponseDetails model = new ResponseDetails();
+            ResponseDetails model = new();
             model.ExceptionMessage = details.ExceptionMessage;
             model.StatusCode = details.StatusCode;
             string error = JsonConvert.SerializeObject(model, new JsonSerializerSettings
