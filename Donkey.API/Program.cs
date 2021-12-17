@@ -3,15 +3,19 @@ using Donkey.API.Settings.Authentication;
 using Donkey.API.Settings.Swagger;
 using Donkey.Core;
 using Donkey.Core.Entities;
+using FluentValidation.AspNetCore;
 using Donkey.Infrastructure;
 using Donkey.Infrastructure.ErrorHandlingMiddleware;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddFluentValidation(x =>
+    x.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly()));
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
