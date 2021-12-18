@@ -4,11 +4,13 @@ using Donkey.API.Settings.Authentication;
 using Donkey.Core.Actions.Queries.Account.Login;
 using Donkey.Infrastructure.ErrorHandlingMiddleware;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace Donkey.API.Controllers
 {
+    [AllowAnonymous]
     public class AccountsController : BaseController
     {
         private readonly AuthenticationSettings _authSettings;
