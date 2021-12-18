@@ -14,6 +14,7 @@ namespace Donkey.Infrastructure
         public static IServiceCollection AddInfrastructure(this IServiceCollection services)
         {
             services.AddScoped<IUsersRepository, MockedUsersRepository>();
+            services.AddScoped<IBlogsRepository, MockedBlogsRepository>();
 
             return services;
         }

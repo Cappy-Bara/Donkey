@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Donkey.Core.Entities
+namespace Donkey.API.DTOs.Requests
 {
-    public class Blog
+    public class CreateBlogDto
     {
         public string Name { get; set; }
-        public string OwnerEmail { get; set; }
     }
 }
