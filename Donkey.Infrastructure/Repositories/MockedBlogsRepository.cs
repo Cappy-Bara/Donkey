@@ -17,17 +17,34 @@ namespace Donkey.Infrastructure.Repositories
 
         public Task Delete(string name)
         {
-            throw new NotImplementedException();
+            return Task.CompletedTask;
         }
 
-        public Task<Blog> Get(string name, string email)
+        public Task<Blog> Get(string name)
         {
-            throw new NotImplementedException();
+            return Task.FromResult(new Blog()
+            {
+                Name = "gorace_karlice_z_twojej_okolicy",
+                OwnerEmail = "karol@wp.pl",
+            });
         }
 
         public Task<List<Blog>> GetAll(string email)
         {
-            throw new NotImplementedException();
+            return Task.FromResult(new List<Blog>
+            {
+                new Blog
+                {
+                    Name = "testowy_blog_1",
+                    OwnerEmail = "milosz@fajnygosc.pl"
+                },
+
+                new Blog
+                {
+                    Name = "gorace_karlice_z_twojej_okolicy",
+                    OwnerEmail = "karol@wp.pl",
+                }
+            });
         }
 
         public Task Update(Blog blog)
