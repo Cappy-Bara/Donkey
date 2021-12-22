@@ -10,6 +10,7 @@ namespace Donkey.Core.Entities
     {
         public string Email { get; set; }
         public string PasswordHash { get; set; }
+        public virtual List<Blog> Blogs { get; set; }
 
         private User()
         {
