@@ -10,5 +10,6 @@ namespace Donkey.Core.Entities
     {
         public string Name { get; set; }
         public string OwnerEmail { get; set; }
+        public virtual List<Post> Posts { get; set; }
     }
 }
