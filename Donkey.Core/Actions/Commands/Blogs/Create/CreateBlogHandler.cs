@@ -25,6 +25,8 @@ namespace Donkey.Core.Actions.Commands.Blogs.Create
         {
             ValidateUserExistance(request.UserEmail);
 
+            CheckBlogExistance(request.BlogName);
+
             var data = new Blog()
             {
                 OwnerEmail = request.UserEmail,
@@ -39,6 +41,12 @@ namespace Donkey.Core.Actions.Commands.Blogs.Create
             var user = await _usersRepo.Get(userEmail);
             if (user is null)
                 throw new NotFoundException("This user does not exist");
+        }
+        private async void CheckBlogExistance(string blogName)
+        {
+            var blog = await _blogsRepo.Get(blogName);
+            if (blog is not null)
+                throw new BadRequestException("Blog with this name already exists.");
         }
     }
 }
