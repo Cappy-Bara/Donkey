@@ -53,7 +53,6 @@ app.EnableAutoMigrations();
 
 app.UseCors("AllowAllOrigins");
 
-app.UseDeveloperExceptionPage();
 app.UseSwagger();
 app.UseSwaggerUI();
 
