@@ -23,9 +23,9 @@ namespace Donkey.Core.Actions.Commands.Blogs.Create
 
         public async Task<Unit> Handle(CreateBlog request, CancellationToken cancellationToken)
         {
-            ValidateUserExistance(request.UserEmail);
+            await ValidateUserExistance(request.UserEmail);
 
-            CheckBlogExistance(request.BlogName);
+            await CheckBlogExistance(request.BlogName);
 
             var data = new Blog()
             {
@@ -36,13 +36,13 @@ namespace Donkey.Core.Actions.Commands.Blogs.Create
             await _blogsRepo.Create(data);
             return Unit.Value;
         }
-        private async void ValidateUserExistance(string userEmail)
+        private async Task ValidateUserExistance(string userEmail)
         {
             var user = await _usersRepo.Get(userEmail);
             if (user is null)
                 throw new NotFoundException("This user does not exist");
         }
-        private async void CheckBlogExistance(string blogName)
+        private async Task CheckBlogExistance(string blogName)
         {
             var blog = await _blogsRepo.Get(blogName);
             if (blog is not null)
