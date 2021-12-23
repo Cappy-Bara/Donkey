@@ -16,9 +16,8 @@ namespace Donkey.Infrastructure
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration config)
         {
-            services.AddScoped<IUsersRepository, MockedUsersRepository>();
-            services.AddScoped<IBlogsRepository, MockedBlogsRepository>();
-
+            services.AddScoped<IUsersRepository, UsersRepository>();
+            services.AddScoped<IBlogsRepository, BlogsRepository>();
 
             services.AddDbContext<DonkeyDbContext>(options =>
             {
