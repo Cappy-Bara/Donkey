@@ -21,7 +21,7 @@ namespace Donkey.API.Controllers
         }
 
         [SwaggerOperation("Creates new blog for logged user")]
-        [SwaggerResponse(200, "User provided correct blog creation data")]
+        [SwaggerResponse(201, "User provided correct blog creation data")]
         [SwaggerResponse(404, "This user does not exsist", typeof(ResponseDetails))]
         [SwaggerResponse(401, "User is unauthorized", typeof(ResponseDetails))]
         [SwaggerResponse(400, "User didin't provided value in one of the fields, or provided incorrect value.", typeof(ValidationProblemDetails))]
@@ -36,7 +36,7 @@ namespace Donkey.API.Controllers
 
             await _mediator.Send(command);
 
-            return Ok();
+            return Created($"/api/blogs/{blogData.Name}",blogData.Name);
         }
 
         [SwaggerOperation("Returns all blogs of logged user.")]
