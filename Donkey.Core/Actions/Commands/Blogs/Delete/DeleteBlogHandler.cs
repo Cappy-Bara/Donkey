@@ -29,7 +29,7 @@ namespace Donkey.Core.Actions.Commands.Blogs.Delete
             if (blog.OwnerEmail != request.Email)
                 throw new BadRequestException("This blog doesn't belong to logged user.");
 
-            await _blogsRepo.Delete(blog.Name);
+            await _blogsRepo.Delete(blog);
             return new Unit();
         }
     }

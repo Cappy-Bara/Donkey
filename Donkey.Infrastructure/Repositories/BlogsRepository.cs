@@ -25,9 +25,8 @@ namespace Donkey.Infrastructure.Repositories
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task Delete(string name)
+        public async Task Delete(Blog blog)
         {
-            var blog = await Get(name);
             _dbContext.Blogs.Remove(blog);
             await _dbContext.SaveChangesAsync();
         }
