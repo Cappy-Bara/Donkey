@@ -16,8 +16,6 @@ namespace Donkey.Tests.Core.Posts
 {
     public class GetPostTests
     {
-
-
         private async Task<DonkeyDbContext> GetDbContext(List<Post> posts)
         {
             posts ??= new List<Post>();

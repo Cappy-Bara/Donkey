@@ -66,5 +66,22 @@ namespace Donkey.API.Controllers
             return Ok(output);
         }
 
+        [SwaggerOperation("Removes post.")]
+        [SwaggerResponse(200, "Post has been removed.", typeof(PostDto))]
+        [SwaggerResponse(400, "Post doesnt belong to logged user.", typeof(ResponseDetails))]
+        [SwaggerResponse(404, "This post does not exsist.", typeof(ResponseDetails))]
+        [SwaggerResponse(400, "User didin't provided value in one of the fields, or provided incorrect value.", typeof(ValidationProblemDetails))]
+        [HttpDelete("/api/blogs/posts/{postId}")]
+        public async Task<ActionResult> Delete([FromRoute] Guid postId)
+        {
+            var query = new DeletePost()
+            {
+                PostId = postId
+            };
+
+            await _mediator.Send(query);
+
+            return Ok();
+        }
     }
 }

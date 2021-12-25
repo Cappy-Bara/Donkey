@@ -25,6 +25,12 @@ namespace Donkey.Infrastructure.Repositories
             return output;
         }
 
+        public async Task Delete(Post post)
+        {
+            _dbContext.Remove(post);
+            await _dbContext.SaveChangesAsync();
+        }
+
         public async Task<Post> Get(Guid id)
         {
             return await _dbContext.Posts.FirstOrDefaultAsync(x => x.Id == id);
