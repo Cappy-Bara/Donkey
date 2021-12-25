@@ -1,4 +1,5 @@
 ﻿using Donkey.Core.Actions.Commands.Posts;
+using Donkey.Core.Actions.Commands.Posts.Create;
 using Donkey.Core.Entities;
 using Donkey.Core.Exceptions;
 using Donkey.Infrastructure.Database;

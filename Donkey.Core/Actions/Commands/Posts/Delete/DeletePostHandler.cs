@@ -1,13 +1,8 @@
 ﻿using Donkey.Core.Exceptions;
 using Donkey.Core.Repositories;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Donkey.Core.Actions.Commands.Posts
+namespace Donkey.Core.Actions.Commands.Posts.Delete
 {
     public class DeletePostHandler : IRequestHandler<DeletePost, Unit>
     {

@@ -1,7 +1,6 @@
-﻿using Donkey.Core.Actions.Commands.Posts;
+﻿using Donkey.Core.Actions.Commands.Posts.Delete;
 using Donkey.Core.Entities;
 using Donkey.Core.Exceptions;
-using Donkey.Core.Repositories;
 using Donkey.Infrastructure.Database;
 using Donkey.Infrastructure.Repositories;
 using FluentAssertions;

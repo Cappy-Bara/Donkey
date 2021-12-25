@@ -2,6 +2,8 @@
 using Donkey.API.DTOs.Requests;
 using Donkey.API.DTOs.Responses;
 using Donkey.Core.Actions.Commands.Posts;
+using Donkey.Core.Actions.Commands.Posts.Create;
+using Donkey.Core.Actions.Commands.Posts.Delete;
 using Donkey.Core.Actions.Queries.Posts.GetPost;
 using Donkey.Infrastructure.ErrorHandlingMiddleware;
 using MediatR;

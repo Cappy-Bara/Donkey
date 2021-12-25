@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Donkey.Core.Actions.Commands.Posts
+namespace Donkey.Core.Actions.Commands.Posts.Delete
 {
     public class DeletePost : IRequest
     {
