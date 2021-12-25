@@ -1,15 +1,15 @@
 ﻿using Donkey.Core.Entities;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Donkey.Core.Repositories
+namespace Donkey.Core.Actions.Queries.Posts.GetPost
 {
-    public interface IPostsRepository
+    public class GetPost : IRequest<Post>
     {
-        public Task<Guid> Create(Post post);
-        public Task<Post> Get(Guid id);
+        public Guid PostId { get; set; }
     }
 }

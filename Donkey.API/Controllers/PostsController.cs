@@ -1,15 +1,13 @@
 ﻿using Donkey.API.ClientDataProviders;
 using Donkey.API.DTOs.Requests;
+using Donkey.API.DTOs.Responses;
 using Donkey.Core.Actions.Commands.Posts;
+using Donkey.Core.Actions.Queries.Posts.GetPost;
 using Donkey.Infrastructure.ErrorHandlingMiddleware;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Donkey.API.Controllers
 {
@@ -22,11 +20,9 @@ namespace Donkey.API.Controllers
             _userDataProvider = userDataProvider;
         }
 
-
         [SwaggerOperation("Creates new post for chosen blog.")]
         [SwaggerResponse(201, "User provided correct post creation data.")]
-        [SwaggerResponse(404, "This user does not exsist.", typeof(ResponseDetails))]
-        [SwaggerResponse(404, "This blog does not exsist.", typeof(ResponseDetails))]
+        [SwaggerResponse(404, "Blog or user does not exsist.", typeof(ResponseDetails))]
         [SwaggerResponse(400, "Blog doesnt belong to logged user.", typeof(ResponseDetails))]
         [SwaggerResponse(401, "User is unauthorized", typeof(ResponseDetails))]
         [SwaggerResponse(400, "User didin't provided value in one of the fields, or provided incorrect value.", typeof(ValidationProblemDetails))]
@@ -46,7 +42,29 @@ namespace Donkey.API.Controllers
             return Created($"/api/blogs/{blogId}/posts/{output}",output);
         }
 
+        [AllowAnonymous]
+        [SwaggerOperation("Gets post details.")]
+        [SwaggerResponse(200, "User provided correct post data.",typeof(PostDto))]
+        [SwaggerResponse(204, "User provided correct post data.")]
+        [SwaggerResponse(404, "This user, blog or post does not exsist.", typeof(ResponseDetails))]
+        [SwaggerResponse(400, "User didin't provided value in one of the fields, or provided incorrect value.", typeof(ValidationProblemDetails))]
+        [HttpPost("/api/blogs/posts/{postId}")]
+        public async Task<ActionResult> Get([FromRoute] Guid postId)
+        {
+            var query = new GetPost()
+            {
+                PostId = postId
+            };
 
+            var post = await _mediator.Send(query);
+
+            if (post == null)
+                return NoContent();
+
+            var output = new PostDto(post);
+
+            return Ok(output);
+        }
 
     }
 }
