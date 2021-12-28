@@ -90,18 +90,18 @@ namespace Donkey.API.Controllers
         }
 
         [SwaggerOperation("Get posts from chosen blog.")]
-        [SwaggerResponse(200, "Returns some user posts.", typeof(PostDto))]
-        [SwaggerResponse(204, "There is no posts on this blog.", typeof(PostDto))]
+        [SwaggerResponse(200, "Returns some user posts.", typeof(PaginatedDto<ListedPostDto>))]
+        [SwaggerResponse(204, "There is no posts on this blog.")]
         [SwaggerResponse(404, "This blog does not exsist.", typeof(ResponseDetails))]
-        [SwaggerResponse(400, "This page does not exsist.", typeof(ResponseDetails))]
+        [SwaggerResponse(400, "You requested for not existing page.", typeof(ResponseDetails))]
         [SwaggerResponse(400, "User didin't provided value in one of the fields, or provided incorrect value.", typeof(ValidationProblemDetails))]
-        [HttpGet("/api/blogs/{blogId}/posts")]
+        [HttpGet("/api/blogs/{blogName}/posts")]
         [AllowAnonymous]
-        public async Task<ActionResult> GetSomeFromBlog([FromRoute]string blogId,[FromQuery]int page=1, [FromQuery]int limit = 10)
+        public async Task<ActionResult<PaginatedDto<ListedPostDto>>> GetSomePostsFromBlog([FromRoute]string blogName, [FromQuery]int page=1, [FromQuery]int limit = 10)
         {
             var query = new GetPosts()
             {
-                BlogName = blogId,
+                BlogName = blogName,
                 PageNumber = page,
                 PostsOnPageAmount = limit
             };
@@ -111,9 +111,9 @@ namespace Donkey.API.Controllers
             if (paginatedPosts == PaginatedResult<Post>.Empty)
                 return NoContent();
 
-            var output = new PaginatedDto<PostDto>
+            var output = new PaginatedDto<ListedPostDto>
             {
-                Items = paginatedPosts.Items.Select(x => new PostDto(x)).ToList(),
+                Items = paginatedPosts.Items.Select(x => new ListedPostDto(x)).ToList(),
                 PaginationData = new PaginationDataDto(paginatedPosts)
             };
 

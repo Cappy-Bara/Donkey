@@ -18,11 +18,11 @@ namespace Donkey.Core.Actions.Queries.Posts.GetPosts
 
         public async Task<PaginatedResult<Post>> Handle(GetPosts request, CancellationToken cancellationToken)
         {
-            var output = await _postsRepo.GetFromBlog(request.BlogName, request.PageNumber, request.PostsOnPageAmount);
-
-            var blog = _blogsRepo.Get(request.BlogName);
+            var blog = await _blogsRepo.Get(request.BlogName);
             if (blog == null)
                 throw new NotFoundException("This blog does not exist");
+
+            var output = await _postsRepo.GetFromBlog(request.BlogName, request.PageNumber, request.PostsOnPageAmount);
 
             if (output == PaginatedResult<Post>.Invalid)
                 throw new BadRequestException("This page does not exist.");
