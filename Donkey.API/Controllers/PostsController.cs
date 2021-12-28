@@ -5,6 +5,9 @@ using Donkey.Core.Actions.Commands.Posts;
 using Donkey.Core.Actions.Commands.Posts.Create;
 using Donkey.Core.Actions.Commands.Posts.Delete;
 using Donkey.Core.Actions.Queries.Posts.GetPost;
+using Donkey.Core.Actions.Queries.Posts.GetPosts;
+using Donkey.Core.Entities;
+using Donkey.Core.Utilities.Pagination;
 using Donkey.Infrastructure.ErrorHandlingMiddleware;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -50,7 +53,7 @@ namespace Donkey.API.Controllers
         [SwaggerResponse(204, "User provided correct post data.")]
         [SwaggerResponse(404, "This user, blog or post does not exsist.", typeof(ResponseDetails))]
         [SwaggerResponse(400, "User didin't provided value in one of the fields, or provided incorrect value.", typeof(ValidationProblemDetails))]
-        [HttpPost("/api/blogs/posts/{postId}")]
+        [HttpGet("/api/blogs/posts/{postId}")]
         public async Task<ActionResult> Get([FromRoute] Guid postId)
         {
             var query = new GetPost()
@@ -69,7 +72,7 @@ namespace Donkey.API.Controllers
         }
 
         [SwaggerOperation("Removes post.")]
-        [SwaggerResponse(200, "Post has been removed.", typeof(PostDto))]
+        [SwaggerResponse(200, "Post has been removed.")]
         [SwaggerResponse(400, "Post doesnt belong to logged user.", typeof(ResponseDetails))]
         [SwaggerResponse(404, "This post does not exsist.", typeof(ResponseDetails))]
         [SwaggerResponse(400, "User didin't provided value in one of the fields, or provided incorrect value.", typeof(ValidationProblemDetails))]
@@ -84,6 +87,37 @@ namespace Donkey.API.Controllers
             await _mediator.Send(query);
 
             return Ok();
+        }
+
+        [SwaggerOperation("Get posts from chosen blog.")]
+        [SwaggerResponse(200, "Returns some user posts.", typeof(PostDto))]
+        [SwaggerResponse(204, "There is no posts on this blog.", typeof(PostDto))]
+        [SwaggerResponse(404, "This blog does not exsist.", typeof(ResponseDetails))]
+        [SwaggerResponse(400, "This page does not exsist.", typeof(ResponseDetails))]
+        [SwaggerResponse(400, "User didin't provided value in one of the fields, or provided incorrect value.", typeof(ValidationProblemDetails))]
+        [HttpGet("/api/blogs/{blogId}/posts")]
+        [AllowAnonymous]
+        public async Task<ActionResult> GetSomeFromBlog([FromRoute]string blogId,[FromQuery]int page=1, [FromQuery]int limit = 10)
+        {
+            var query = new GetPosts()
+            {
+                BlogName = blogId,
+                PageNumber = page,
+                PostsOnPageAmount = limit
+            };
+
+            var paginatedPosts = await _mediator.Send(query);
+
+            if (paginatedPosts == PaginatedResult<Post>.Empty)
+                return NoContent();
+
+            var output = new PaginatedDto<PostDto>
+            {
+                Items = paginatedPosts.Items.Select(x => new PostDto(x)).ToList(),
+                PaginationData = new PaginationDataDto(paginatedPosts)
+            };
+
+            return Ok(output);
         }
     }
 }

@@ -1,31 +1,43 @@
 ﻿using Donkey.Core.Exceptions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Donkey.Core.Utilities.Pagination;
+using Donkey.Infrastructure.Extensions.EF;
+using System.Linq.Expressions;
 
-namespace Donkey.Core.Utilities.Pagination
+namespace Donkey.Infrastructure.Utilities.Pagination
 {
     public class Paginator<T>
     {
-        internal IEnumerable<T> _collection;
+        internal IQueryable<T> _collection;
         private readonly int _pageSize;
 
-        public Paginator(IEnumerable<T> collection, int pageSize)
+        public Paginator(IQueryable<T> collection, int pageSize)
         {
             _collection = collection;
             _pageSize = pageSize;
         }
 
-        public PaginatedResult<T> GetElementsFromPage(int pageNumber)
+        public async Task<PaginatedResult<T>> GetElementsFromPage(int pageNumber)
         {
+            if (_collection is null)
+            {
+                if(pageNumber == 1)
+                    return PaginatedResult<T>.Empty;
+                return PaginatedResult<T>.Invalid;
+            }
+               
+
             int pageCount = (int)Math.Ceiling(((double)_collection.Count() / (double)_pageSize));
 
             if (pageNumber > pageCount)
-                return PaginatedResult<T>.Empty;
+            {
+                if(pageNumber > 1)
+                    return PaginatedResult<T>.Invalid;
 
-            var items = _collection.Skip(_pageSize * (pageNumber - 1)).Take(_pageSize);
+                return PaginatedResult<T>.Empty;
+            }
+
+            var items = await _collection.Skip(_pageSize * (pageNumber - 1)).Take(_pageSize).ToListAsyncSafe();
+            
             int firstElementIndex = (pageNumber - 1) * _pageSize + 1;
             int lastElementIndex = firstElementIndex + items.Count() - 1;
 
@@ -43,7 +55,7 @@ namespace Donkey.Core.Utilities.Pagination
 
     public static class PaginatorExtensions
     {
-        public static Paginator<T> OrderBy<T,TKey>(this Paginator<T> paginator, Func<T, TKey> predicate)
+        public static Paginator<T> OrderBy<T,TKey>(this Paginator<T> paginator, Expression<Func<T, TKey>> predicate)
         {
             paginator._collection = paginator._collection.OrderBy(predicate);
             return paginator;
