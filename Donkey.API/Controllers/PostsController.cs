@@ -50,7 +50,7 @@ namespace Donkey.API.Controllers
         [SwaggerResponse(204, "User provided correct post data.")]
         [SwaggerResponse(404, "This user, blog or post does not exsist.", typeof(ResponseDetails))]
         [SwaggerResponse(400, "User didin't provided value in one of the fields, or provided incorrect value.", typeof(ValidationProblemDetails))]
-        [HttpPost("/api/blogs/posts/{postId}")]
+        [HttpGet("/api/blogs/posts/{postId}")]
         public async Task<ActionResult> Get([FromRoute] Guid postId)
         {
             var query = new GetPost()
