@@ -19,6 +19,7 @@ namespace Donkey.Infrastructure
             services.AddScoped<IUsersRepository, UsersRepository>();
             services.AddScoped<IBlogsRepository, BlogsRepository>();
             services.AddScoped<IPostsRepository, PostsRepository>();
+            services.AddScoped<ISearchPostRepository, SearchPostRepository>();
 
             services.AddDbContext<DonkeyDbContext>(options =>
             {
