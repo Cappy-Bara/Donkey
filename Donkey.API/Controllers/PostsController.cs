@@ -97,13 +97,13 @@ namespace Donkey.API.Controllers
         [SwaggerResponse(400, "User didin't provided value in one of the fields, or provided incorrect value.", typeof(ValidationProblemDetails))]
         [HttpGet("/api/blogs/{blogName}/posts")]
         [AllowAnonymous]
-        public async Task<ActionResult<PaginatedDto<ListedPostDto>>> GetSomePostsFromBlog([FromRoute]string blogName, [FromQuery]int page=1, [FromQuery]int limit = 10)
+        public async Task<ActionResult<PaginatedDto<ListedPostDto>>> GetSomePostsFromBlog([FromRoute]string blogName, [FromQuery]PaginationDto data)
         {
             var query = new GetPosts()
             {
                 BlogName = blogName,
-                PageNumber = page,
-                PostsOnPageAmount = limit
+                PageNumber = data.Page,
+                PostsOnPageAmount = data.Limit
             };
 
             var paginatedPosts = await _mediator.Send(query);
