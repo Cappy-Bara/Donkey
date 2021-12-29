@@ -35,5 +35,11 @@ namespace Donkey.Infrastructure.Repositories
         {
             return await _dbContext.Posts.FirstOrDefaultAsync(x => x.Id == id);
         }
+
+        public async Task Update(Post post)
+        {
+            _dbContext.Posts.Update(post);
+            await _dbContext.SaveChangesAsync();
+        }
     }
 }

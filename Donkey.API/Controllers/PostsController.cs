@@ -4,6 +4,7 @@ using Donkey.API.DTOs.Responses;
 using Donkey.Core.Actions.Commands.Posts;
 using Donkey.Core.Actions.Commands.Posts.Create;
 using Donkey.Core.Actions.Commands.Posts.Delete;
+using Donkey.Core.Actions.Commands.Posts.Modify;
 using Donkey.Core.Actions.Queries.Posts.GetPost;
 using Donkey.Core.Actions.Queries.Posts.GetPosts;
 using Donkey.Core.Entities;
@@ -118,6 +119,27 @@ namespace Donkey.API.Controllers
             };
 
             return Ok(output);
+        }
+
+        [SwaggerOperation("Modifies post.")]
+        [SwaggerResponse(200, "Post has been modified.")]
+        [SwaggerResponse(400, "Post doesnt belong to logged user.", typeof(ResponseDetails))]
+        [SwaggerResponse(404, "This post or user does not exsist.", typeof(ResponseDetails))]
+        [SwaggerResponse(400, "User didin't provided value in one of the fields, or provided incorrect value.", typeof(ValidationProblemDetails))]
+        [HttpPut("/api/blogs/posts/{postId}")]
+        public async Task<ActionResult> Modify([FromRoute] Guid postId, ModifyPostDto dto)
+        {
+            var command = new ModifyPost()
+            {
+                PostContent = dto.PostContent,
+                PostId = postId,
+                PostTitle = dto.PostTitle,
+                UserEmail = _userDataProvider.Email()
+            };
+
+            await _mediator.Send(command);
+
+            return Ok();
         }
     }
 }
