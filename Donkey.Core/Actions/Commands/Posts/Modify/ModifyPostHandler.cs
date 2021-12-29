@@ -1,4 +1,5 @@
-﻿using Donkey.Core.Exceptions;
+﻿using Donkey.Core.Entities;
+using Donkey.Core.Exceptions;
 using Donkey.Core.Repositories;
 using MediatR;
 
@@ -30,12 +31,20 @@ namespace Donkey.Core.Actions.Commands.Posts.Modify
             if (post.AuthorEmail != user.Email)
                 throw new BadRequestException("This post does not belong to logged user.");
 
-            post.Title = request.PostTitle;
-            post.Content = request.PostContent;
+            UpdatePostProperties(post,request);
 
             await _postsRepo.Update(post);
 
             return Unit.Value;
+        }
+
+        public void UpdatePostProperties(Post post, ModifyPost request)
+        {
+            var newTitle = (String.IsNullOrWhiteSpace(request.PostTitle) || String.Empty == request.PostTitle) ? post.Title : request.PostTitle;
+            var newContent = (String.IsNullOrWhiteSpace(request.PostContent) || String.Empty == request.PostContent) ? post.Content : request.PostContent;
+        
+            post.Title = newTitle;
+            post.Content = newContent;
         }
     }
 }

@@ -121,7 +121,7 @@ namespace Donkey.API.Controllers
             return Ok(output);
         }
 
-        [SwaggerOperation("Modifies post.")]
+        [SwaggerOperation("Modifies post. If field is empty, does not modify field.")]
         [SwaggerResponse(200, "Post has been modified.")]
         [SwaggerResponse(400, "Post doesnt belong to logged user.", typeof(ResponseDetails))]
         [SwaggerResponse(404, "This post or user does not exsist.", typeof(ResponseDetails))]
