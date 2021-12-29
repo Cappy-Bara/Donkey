@@ -12,5 +12,6 @@ namespace Donkey.Core.Repositories
         public Task<Guid> Create(Post post);
         public Task<Post> Get(Guid id);
         public Task Delete(Post post);
+        public Task Update(Post post);
     }
 }
