@@ -26,6 +26,10 @@ namespace Donkey.Core.Actions.Commands.Blogs.Delete
                 throw new NotFoundException("This user does not exist.");
 
             var blog = await _blogsRepo.Get(request.BlogName);
+
+            if (blog is null)
+                throw new NotFoundException("This blog does not exist.");
+
             if (blog.OwnerEmail != request.Email)
                 throw new BadRequestException("This blog doesn't belong to logged user.");
 
