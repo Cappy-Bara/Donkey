@@ -4,6 +4,8 @@ using Donkey.API.DTOs.Responses;
 using Donkey.Core.Actions.Commands.Blogs;
 using Donkey.Core.Actions.Commands.Blogs.Delete;
 using Donkey.Core.Actions.Queries.Blogs.GetBlogs;
+using Donkey.Core.Entities;
+using Donkey.Core.Utilities.Pagination;
 using Donkey.Infrastructure.ErrorHandlingMiddleware;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -40,26 +42,29 @@ namespace Donkey.API.Controllers
         }
 
         [SwaggerOperation("Returns all blogs of logged user.")]
-        [SwaggerResponse(200, "User exists and has some blogs",typeof(BlogsDto))]
+        [SwaggerResponse(200, "User exists and has some blogs",typeof(PaginatedDto<BlogDto>))]
         [SwaggerResponse(204, "User exist but didn't have any blogs")]
         [SwaggerResponse(404, "This user does not exsist", typeof(ResponseDetails))]
         [SwaggerResponse(401, "User is unauthorized")]
         [HttpGet]
-        public async Task<ActionResult<BlogsDto>> Get()
+        public async Task<ActionResult<PaginatedDto<BlogDto>>> GetAll([FromQuery]PaginationDto dto)
         {
             var command = new GetBlogs()
             {
                 Email = _userDataProvider.Email(),
+                PageNumber = dto.Page,
+                PostsOnPageAmount = dto.Limit,
             };
 
             var blogs = await _mediator.Send(command);
 
-            if (blogs == null || !blogs.Any())
+            if (blogs == PaginatedResult<Blog>.Empty)
                 return NoContent();
 
-            var output = new BlogsDto()
+            var output = new PaginatedDto<BlogDto>()
             {
-                Blogs = blogs.Select(x => new BlogDto() { Name = x.Name }).ToList()
+                Items = blogs.Items.Select(x => new BlogDto() {Name = x.Name }).ToList(),
+                PaginationData = new PaginationDataDto(blogs),
             };
 
             return Ok(output);

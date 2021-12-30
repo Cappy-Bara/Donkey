@@ -10,7 +10,6 @@ namespace Donkey.Core.Repositories
     public interface IBlogsRepository
     {
         public Task Create(Blog blog);
-        public Task<List<Blog>> GetAll(string email);
         public Task<Blog> Get(string name);
         public Task Delete(Blog blog);
         public Task Update(Blog blog);
