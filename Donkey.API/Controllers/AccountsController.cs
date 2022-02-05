@@ -1,6 +1,7 @@
 ﻿using Donkey.API.DTOs.Requests;
 using Donkey.API.DTOs.Responses;
 using Donkey.API.Settings.Authentication;
+using Donkey.Core.Actions.Commands.Accounts.Register;
 using Donkey.Core.Actions.Queries.Account.Login;
 using Donkey.Infrastructure.ErrorHandlingMiddleware;
 using MediatR;
@@ -45,6 +46,22 @@ namespace Donkey.API.Controllers
             };
 
             return Ok(output);
+        }
+
+        [SwaggerOperation("Registers user in aplication")]
+        [SwaggerResponse(200, "User provided correct email and password", typeof(UserDataDto))]
+        [SwaggerResponse(400, "User with this email already exists.", typeof(ResponseDetails))]
+        [SwaggerResponse(400, "Email is in wrong format", typeof(ValidationProblemDetails))]
+        [SwaggerResponse(400, "One of the fields is empty", typeof(ValidationProblemDetails))]
+        [SwaggerResponse(400, "Passwords didn't match", typeof(ValidationProblemDetails))]
+        [HttpPost("register")]
+        public async Task<ActionResult<UserDataDto>> Register([FromBody] RegisterDto registerData)
+        {
+            var query = new Register(registerData.Email, registerData.Password);
+
+            await _mediator.Send(query);
+
+            return Ok();
         }
     }
 }

@@ -43,6 +43,9 @@ namespace Donkey.Core.Actions.Queries.Account.Login
             if (user == null)
                 throw new NotFoundException("User with this email does not exist!");
 
+            if (!user.IsActive)
+                throw new BadRequestException("Account is not activated.");
+
             var result = _hasher.VerifyHashedPassword(user, user.PasswordHash, providedPassword);
             if (result == PasswordVerificationResult.Failed)
                 throw new BadRequestException("Invalid password!");

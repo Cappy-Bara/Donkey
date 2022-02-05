@@ -29,5 +29,11 @@ namespace Donkey.Infrastructure.Repositories
         {
             return await _dbContext.Users.FirstOrDefaultAsync(x => x.Email == email);
         }
+
+        public async Task Update(User user)
+        {
+            _dbContext.Update(user);
+            await _dbContext.SaveChangesAsync();
+        }
     }
 }

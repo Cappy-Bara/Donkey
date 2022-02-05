@@ -11,5 +11,6 @@ namespace Donkey.Core.Repositories
     {
         public Task<User> Get(string email);
         public Task Add(User user);
+        public Task Update(User user);
     }
 }

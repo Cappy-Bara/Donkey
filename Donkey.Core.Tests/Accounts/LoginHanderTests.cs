@@ -14,7 +14,7 @@ namespace Donkey.Tests.Core.Accounts
     public class LoginHandlerTests
     {
 
-        private static async Task<string> EvaluateLogin(string loginEmail, string loginPassword, string emailInDb, string passwordInDb)
+        private static async Task<string> EvaluateLogin(string loginEmail, string loginPassword, string emailInDb, string passwordInDb, bool isActive)
         {
             var userInDb = new User(emailInDb, null);
 
@@ -23,7 +23,14 @@ namespace Donkey.Tests.Core.Accounts
             userInDb.PasswordHash = userInDbHash;
 
             var mock = new Mock<IUsersRepository>();
-            mock.Setup(x => x.Get(emailInDb)).ReturnsAsync(new User(emailInDb, userInDbHash));
+
+            var mockObject = new User(emailInDb, userInDbHash);
+            if (isActive)
+            {
+                mockObject.Activate();
+            }
+
+            mock.Setup(x => x.Get(emailInDb)).ReturnsAsync(mockObject);
             IUsersRepository UserRepoMock = mock.Object;
 
             var sut = new LoginHandler(UserRepoMock, hasher);
@@ -42,19 +49,28 @@ namespace Donkey.Tests.Core.Accounts
 
 
         [Fact]
-        public async Task LoginHander_UserProvidedValidData_ReturnsValidToken()
+        public async Task LoginHander_UserProvidedValidDataAndAccountActive_ReturnsValidToken()
         {
 
-            var sut = await EvaluateLogin("test@wp.pl","aaaaaa", "test@wp.pl", "aaaaaa");
+            var sut = await EvaluateLogin("test@wp.pl","aaaaaa", "test@wp.pl", "aaaaaa",true);
 
             sut.Should().NotBeNullOrEmpty();
+        }
+
+        [Fact]
+        public async Task LoginHander_ValidLoginDataAndAccountInactive_ThrowsException()
+        {
+
+            var sut = () => EvaluateLogin("test@wp.pl", "aaaaaa", "test@wp.pl", "aaaaaa", false);
+
+            await sut.Should().ThrowAsync<BadRequestException>();
         }
 
         [Fact]
         public async Task LoginHander_UserProvidedInvalidPassword_ShouldThrowBadRequestException()
         {
 
-            var sut = () => EvaluateLogin("test@wp.pl", "aaaaaa12", "test@wp.pl", "aaaaaa");
+            var sut = () => EvaluateLogin("test@wp.pl", "aaaaaa12", "test@wp.pl", "aaaaaa",true);
 
             await sut.Should().ThrowAsync<BadRequestException>();
         }

@@ -11,8 +11,9 @@ namespace Donkey.Core.Entities
         public string Email { get; set; }
         public string PasswordHash { get; set; }
         public virtual List<Blog> Blogs { get; set; }
+        public bool IsActive { get; set; } = false;
 
-        private User()
+        public User()
         {
 
         }
@@ -20,6 +21,16 @@ namespace Donkey.Core.Entities
         {
             Email = email;
             PasswordHash = passwordHash;
+        }
+
+        public void ApplyPasswordHash(string passwordHash)
+        {
+            PasswordHash = passwordHash;
+        }
+
+        public void Activate()
+        {
+            IsActive = true;
         }
     }
 }
