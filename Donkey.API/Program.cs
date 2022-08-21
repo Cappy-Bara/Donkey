@@ -29,6 +29,7 @@ builder.Services.AddSwaggerGen(gen =>
 
 builder.Services.AddCustomAuthentication(builder.Configuration);
 builder.Services.AddMediatR(typeof(Program));
+builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddScoped<IUserDataProvider, UserDataProvider>();

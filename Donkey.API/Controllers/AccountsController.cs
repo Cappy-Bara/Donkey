@@ -1,7 +1,11 @@
-﻿using Donkey.API.DTOs.Requests;
+﻿using AutoMapper;
+using Donkey.API.ClientDataProviders;
+using Donkey.API.DTOs.Requests;
 using Donkey.API.DTOs.Responses;
 using Donkey.API.Settings.Authentication;
+using Donkey.Core.Actions.Queries.Account;
 using Donkey.Core.Actions.Queries.Account.Login;
+using Donkey.Core.ValueObjects.Accounts;
 using Donkey.Infrastructure.ErrorHandlingMiddleware;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -14,10 +18,12 @@ namespace Donkey.API.Controllers
     public class AccountsController : BaseController
     {
         private readonly AuthenticationSettings _authSettings;
+        private readonly IUserDataProvider _userDataProvider;
 
-        public AccountsController(IMediator mediator, AuthenticationSettings authSettings) : base(mediator)
+        public AccountsController(IMediator mediator, IMapper mapper, AuthenticationSettings authSettings, IUserDataProvider userDataProvider) : base(mediator, mapper)
         {
             _authSettings = authSettings;
+            _userDataProvider = userDataProvider;
         }
 
         [SwaggerOperation("Logs user in aplication")]
@@ -43,6 +49,22 @@ namespace Donkey.API.Controllers
             {
                 Token = token
             };
+
+            return Ok(output);
+        }
+
+        [SwaggerOperation("Returns user basic data")]
+        [SwaggerResponse(200, "User is logged", typeof(UserBasicDataDto))]
+        [SwaggerResponse(401, "User is unauthorized", typeof(ResponseDetails))]
+        [HttpGet]
+        public async Task<ActionResult<UserBasicDataDto>> UserBasicData()
+        {
+            var email = _userDataProvider.Email();
+
+            var query = new GetUserBasicData(email);
+            var response = await _mediator.Send(query);
+
+            var output = _mapper.Map<UserBasicData, UserBasicDataDto>(response);  
 
             return Ok(output);
         }

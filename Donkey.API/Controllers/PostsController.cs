@@ -1,4 +1,5 @@
-﻿using Donkey.API.ClientDataProviders;
+﻿using AutoMapper;
+using Donkey.API.ClientDataProviders;
 using Donkey.API.DTOs.Requests;
 using Donkey.API.DTOs.Responses;
 using Donkey.Core.Actions.Commands.Posts;
@@ -21,7 +22,7 @@ namespace Donkey.API.Controllers
     {
         private readonly IUserDataProvider _userDataProvider;
 
-        public PostsController(IMediator mediator, IUserDataProvider userDataProvider) : base(mediator)
+        public PostsController(IMediator mediator, IMapper mapper, IUserDataProvider userDataProvider) : base(mediator, mapper)
         {
             _userDataProvider = userDataProvider;
         }
