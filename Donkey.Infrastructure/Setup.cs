@@ -24,7 +24,7 @@ namespace Donkey.Infrastructure
 
             services.AddDbContext<DonkeyDbContext>(options =>
             {
-                options.UseNpgsql(config.GetConnectionString("Heroku"));
+                options.UseNpgsql(config.GetConnectionString("Default"));
             });
 
             return services;
